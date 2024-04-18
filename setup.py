@@ -15,7 +15,8 @@ import codecs
 import os
 import re
 
-from setuptools import setup
+# from setuptools import setup
+from packaging import version
 
 
 dirname = os.path.abspath(os.path.dirname(__file__))
@@ -44,6 +45,7 @@ setup(
         "selenium>=4.9.0",
         "requests",
         "websockets",
+        "packaging",
     ],
     package_data={"undetected_chromedriver": [os.path.join("example", "example.py")]},
     url="https://github.com/ultrafunkamsterdam/undetected-chromedriver",
