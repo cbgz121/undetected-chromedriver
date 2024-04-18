@@ -15,8 +15,7 @@ import codecs
 import os
 import re
 
-# from setuptools import setup
-from packaging import version
+from setuptools import setup
 
 
 dirname = os.path.abspath(os.path.dirname(__file__))
