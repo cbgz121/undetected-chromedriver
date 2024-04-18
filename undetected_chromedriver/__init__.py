@@ -764,6 +764,8 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
     def quit(self):
         try:
             self.service.process.kill()
+            # has to be closed manually, otherwise socket to driver process gets leaked in CLOSE_WAIT
+            self.command_executor.close()
             logger.debug("webdriver process ended")
         except (AttributeError, RuntimeError, OSError):
             pass
@@ -795,7 +797,10 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
                 else:
                     logger.debug("successfully removed %s" % self.user_data_dir)
                     break
-                time.sleep(0.1)
+                try:
+                    time.sleep(0.1)
+                except OSError:
+                    pass
 
         # dereference patcher, so patcher can start cleaning up as well.
         # this must come last, otherwise it will throw 'in use' errors
@@ -838,6 +843,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
     def __del__(self):
         try:
             self.service.process.kill()
+            self.command_executor.close()
         except:  # noqa
             pass
         self.quit()
@@ -852,6 +858,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             and hasattr(self.service.process, "kill")
         ):
             self.service.process.kill()
+            self.command_executor.close()
 
 
 def find_chrome_executable():
